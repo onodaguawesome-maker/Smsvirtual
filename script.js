@@ -1,15 +1,13 @@
-// Auth check for protected pages
+// Auth check
 const protectedPages = ['dashboard.html', 'how-to-use.html', 'cart.html'];
 const currentPage = window.location.pathname.split('/').pop();
 
 if (protectedPages.includes(currentPage)) {
   const isLoggedIn = localStorage.getItem('isLoggedIn');
-  if (!isLoggedIn) {
-    window.location.href = 'login.html';
-  }
+  if (!isLoggedIn) window.location.href = 'login.html';
 }
 
-// Update cart count on all pages
+// Update cart count
 function updateCartCount() {
   const cart = JSON.parse(localStorage.getItem('cart') || '[]');
   const cartCountEl = document.getElementById('cartCount');
@@ -35,7 +33,6 @@ if (signupForm) {
     e.preventDefault();
     const loader = document.getElementById('loader');
     loader.classList.remove('hidden');
-    
     setTimeout(() => {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('userEmail', document.getElementById('email').value);
@@ -51,7 +48,6 @@ if (loginForm) {
     e.preventDefault();
     const loader = document.getElementById('loader');
     loader.classList.remove('hidden');
-    
     setTimeout(() => {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('userEmail', document.getElementById('loginEmail').value);
@@ -60,7 +56,7 @@ if (loginForm) {
   });
 }
 
-// SMS Virtual Apps with logos
+// Apps with logos
 const apps = [
   { name: 'WhatsApp', logo: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg', multiplier: 1.2 },
   { name: 'Telegram', logo: 'https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg', multiplier: 1.0 },
@@ -72,56 +68,61 @@ const apps = [
   { name: 'Discord', logo: 'https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png', multiplier: 0.7 }
 ];
 
-// Real SMS Virtual pricing tiers in Naira
+// Naira pricing
 function getCountryPrice(countryCode, appMultiplier = 1) {
   const tier1 = ['US', 'GB', 'CA', 'AU', 'DE', 'FR', 'NL', 'SE', 'CH'];
   const tier2 = ['NG', 'ZA', 'KE', 'GH', 'IN', 'BR', 'MX', 'ES', 'IT', 'RU', 'UA', 'PL'];
   
   let basePrice;
   if (tier1.includes(countryCode)) {
-    basePrice = Math.floor(Math.random() * 1200) + 2000; // ₦2,000 - ₦3,200
+    basePrice = Math.floor(Math.random() * 1200) + 2000; // ₦2,000-₦3,200
   } else if (tier2.includes(countryCode)) {
-    basePrice = Math.floor(Math.random() * 800) + 1200; // ₦1,200 - ₦2,000
+    basePrice = Math.floor(Math.random() * 800) + 1200; // ₦1,200-₦2,000
   } else if (['CN', 'JP', 'KR', 'SG', 'AE', 'SA', 'TR'].includes(countryCode)) {
-    basePrice = Math.floor(Math.random() * 400) + 800; // ₦800 - ₦1,200
+    basePrice = Math.floor(Math.random() * 400) + 800; // ₦800-₦1,200
   } else {
-    basePrice = Math.floor(Math.random() * 400) + 400; // ₦400 - ₦800
+    basePrice = Math.floor(Math.random() * 400) + 400; // ₦400-₦800
   }
   
-  const finalPrice = basePrice * appMultiplier;
-  return Math.round(finalPrice / 50) * 50;
+  return Math.round((basePrice * appMultiplier) / 50) * 50;
 }
 
-// Show app list on dashboard
-const appsGrid = document.getElementById('appsGrid');
-if (appsGrid) {
+// Show app list
+const appsList = document.getElementById('appsList');
+if (appsList) {
   apps.forEach(app => {
-    const card = document.createElement('div');
-    card.className = 'app-card';
-    card.innerHTML = `
-      <img src="${app.logo}" alt="${app.name}" class="app-logo">
-      <h3>${app.name}</h3>
-      <button class="btn btn-primary btn-full" onclick="showCountries('${app.name}', '${app.logo}', ${app.multiplier})">
-        Get Number
+    const item = document.createElement('div');
+    item.className = 'list-item';
+    item.innerHTML = `
+      <div class="list-item-left">
+        <img src="${app.logo}" alt="${app.name}" class="list-item-logo">
+        <div class="list-item-info">
+          <h3>${app.name}</h3>
+          <p>Virtual number for ${app.name}</p>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-small" onclick="showCountries('${app.name}', '${app.logo}', ${app.multiplier})">
+        Select
       </button>
     `;
-    appsGrid.appendChild(card);
+    item.onclick = () => showCountries(app.name, app.logo, app.multiplier);
+    appsList.appendChild(item);
   });
 }
 
-// Show countries for selected app
+// Show countries list
 let selectedApp = null;
 function showCountries(appName, appLogo, multiplier) {
   selectedApp = { name: appName, logo: appLogo, multiplier: multiplier };
   
   document.getElementById('appListView').classList.add('hidden');
   document.getElementById('countryListView').classList.remove('hidden');
-  document.getElementById('selectedAppTitle').textContent = `${appName} Numbers`;
+  document.getElementById('selectedAppTitle').textContent = `Select Country`;
   document.getElementById('selectedAppName').textContent = appName;
   
-  const servicesGrid = document.getElementById('servicesGrid');
+  const countriesList = document.getElementById('countriesList');
   const loader = document.getElementById('servicesLoader');
-  servicesGrid.innerHTML = '';
+  countriesList.innerHTML = '';
   loader.classList.remove('hidden');
   
   fetch('https://restcountries.com/v3.1/all?fields=name,flags,cca2,idd')
@@ -129,7 +130,7 @@ function showCountries(appName, appLogo, multiplier) {
     .then(data => {
       loader.classList.add('hidden');
       
-      const popular = ['NG', 'US', 'GB', 'CA', 'ZA', 'KE', 'GH', 'IN'];
+      const popular = ['NG', 'US', 'GB', 'CA', 'ZA', 'KE', 'GH', 'IN', 'DE', 'FR'];
       data.sort((a, b) => {
         const aIndex = popular.indexOf(a.cca2);
         const bIndex = popular.indexOf(b.cca2);
@@ -139,36 +140,38 @@ function showCountries(appName, appLogo, multiplier) {
         return a.name.common.localeCompare(b.name.common);
       });
       
-      data.slice(0, 40).forEach(country => {
+      data.slice(0, 50).forEach(country => {
         const price = getCountryPrice(country.cca2, multiplier);
         const phoneCode = country.idd.root ? `${country.idd.root}${country.idd.suffixes?.[0] || ''}` : '+1';
         
-        const card = document.createElement('div');
-        card.className = 'service-card';
-        card.innerHTML = `
-          <div class="card-header">
-            <img src="${appLogo}" alt="${appName}" class="app-icon">
-            <img src="${country.flags.png}" alt="${country.name.common}" class="flag-icon">
+        const item = document.createElement('div');
+        item.className = 'list-item';
+        item.innerHTML = `
+          <div class="list-item-left">
+            <img src="${country.flags.png}" alt="${country.name.common}" class="list-item-flag">
+            <div class="list-item-info">
+              <h3>${country.name.common}</h3>
+              <p>${phoneCode}</p>
+            </div>
           </div>
-          <div class="service-card-body">
-            <h3>${country.name.common}</h3>
-            <p>${appName} • ${phoneCode}</p>
-            <div class="price">₦${price.toLocaleString()} / SMS</div>
-            <button class="btn btn-primary btn-full" onclick="addToCart('${appName}', '${country.name.common}', '${country.cca2}', ${price})">
-              Add to Cart
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="list-item-price">₦${price.toLocaleString()}</div>
+            <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); addToCart('${appName}', '${country.name.common}', '${country.cca2}', ${price})">
+              Add
             </button>
           </div>
         `;
-        servicesGrid.appendChild(card);
+        item.onclick = () => addToCart(appName, country.name.common, country.cca2, price);
+        countriesList.appendChild(item);
       });
     })
     .catch(err => {
       loader.classList.add('hidden');
-      servicesGrid.innerHTML = '<p>Failed to load services. Please refresh.</p>';
+      countriesList.innerHTML = '<p style="text-align:center; padding:2rem;">Failed to load countries. Please refresh.</p>';
     });
 }
 
-// Back to apps button
+// Back to apps
 const backToApps = document.getElementById('backToApps');
 if (backToApps) {
   backToApps.addEventListener('click', () => {
@@ -177,19 +180,13 @@ if (backToApps) {
   });
 }
 
-// Add to cart function with app name
+// Add to cart
 function addToCart(appName, countryName, countryCode, price) {
   const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-  cart.push({ 
-    appName, 
-    countryName, 
-    countryCode, 
-    price: parseInt(price), 
-    id: Date.now() 
-  });
+  cart.push({ appName, countryName, countryCode, price: parseInt(price), id: Date.now() });
   localStorage.setItem('cart', JSON.stringify(cart));
   updateCartCount();
-  alert(`${appName} - ${countryName} added to cart for ₦${price.toLocaleString()}!`);
+  alert(`${appName} - ${countryName} added for ₦${price.toLocaleString()}!`);
 }
 
 // Cart page
@@ -234,7 +231,7 @@ function removeFromCart(id) {
   location.reload();
 }
 
-// Checkout to WhatsApp with NAIRA
+// Checkout to WhatsApp
 const checkoutBtn = document.getElementById('checkoutBtn');
 if (checkoutBtn) {
   checkoutBtn.addEventListener('click', () => {
@@ -242,8 +239,7 @@ if (checkoutBtn) {
     const userEmail = localStorage.getItem('userEmail') || 'Guest';
     
     let message = `Hello! I want to order SMS virtual numbers:%0A%0A`;
-    message += `Email: ${userEmail}%0A%0A`;
-    message += `Items:%0A`;
+    message += `Email: ${userEmail}%0A%0AItems:%0A`;
     
     let total = 0;
     cart.forEach((item, i) => {
@@ -252,8 +248,6 @@ if (checkoutBtn) {
     });
     
     message += `%0ATotal: ₦${total.toLocaleString()}%0A%0APlease confirm my order.`;
-    
-    const whatsappURL = `https://wa.me/2348088639901?text=${message}`;
-    window.open(whatsappURL, '_blank');
+    window.open(`https://wa.me/2348088639901?text=${message}`, '_blank');
   });
 }
