@@ -349,10 +349,47 @@ footer {
   font-size: 1.1rem;
 }
 
+/* MOBILE MENU */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #2563eb;
+}
+
 @media (max-width: 768px) {
   .hero h1 { font-size: 2rem; }
-  .nav-links { gap: 0.8rem; font-size: 0.9rem; }
   .hero-buttons { flex-direction: column; }
   .list-item { padding: 1rem; }
   .list-item-logo { width: 35px; height: 35px; }
+  
+  .menu-toggle {
+    display: block;
+  }
+  
+  .nav-links {
+    position: fixed;
+    top: 70px;
+    right: -100%;
+    background: white;
+    flex-direction: column;
+    width: 200px;
+    padding: 1.5rem;
+    box-shadow: -2px 4px 10px rgba(0,0,0,0.1);
+    border-radius: 12px 0 0 12px;
+    transition: right 0.3s;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .nav-links.active {
+    right: 0;
+  }
+  
+  .nav-links a {
+    width: 100%;
+    padding: 0.5rem 0;
+  }
 }
