@@ -1,13 +1,13 @@
 // Auth check
 const protectedPages = ['dashboard', 'how-to-use', 'cart', 'contact'];
-const currentPage = window.location.pathname.split('/').pop();
+const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
 
 if (protectedPages.includes(currentPage)) {
   const isLoggedIn = localStorage.getItem('isLoggedIn');
-  if (!isLoggedIn) window.location.href = 'login.html';
+  if (!isLoggedIn) window.location.href = '/login';
 }
 
-// MOBILE MENU TOGGLE - ADD THIS
+// MOBILE MENU TOGGLE
 const menuToggle = document.getElementById('menuToggle');
 const navLinks = document.getElementById('navLinks');
 if (menuToggle) {
@@ -15,7 +15,6 @@ if (menuToggle) {
     navLinks.classList.toggle('active');
   });
   
-  // Close menu when clicking a link
   document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', () => {
       navLinks.classList.remove('active');
@@ -38,7 +37,7 @@ if (logoutBtn) {
     e.preventDefault();
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userEmail');
-    window.location.href = 'index.html';
+    window.location.href = '/';
   });
 }
 
@@ -52,7 +51,7 @@ if (signupForm) {
     setTimeout(() => {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('userEmail', document.getElementById('email').value);
-      window.location.href = 'dashboard.html';
+      window.location.href = '/dashboard';
     }, 1500);
   });
 }
@@ -67,7 +66,7 @@ if (loginForm) {
     setTimeout(() => {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('userEmail', document.getElementById('loginEmail').value);
-      window.location.href = 'dashboard.html';
+      window.location.href = '/dashboard';
     }, 1500);
   });
 }
@@ -168,6 +167,7 @@ function showCountries(appName, appLogo, multiplier) {
               <h3>${country.name.common}</h3>
               <p>${phoneCode}</p>
             </div>
+          </div>
           <div style="display: flex; align-items: center; gap: 1rem;">
             <div class="list-item-price">₦${price.toLocaleString()}</div>
             <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); addToCart('${appName}', '${country.name.common}', '${country.cca2}', ${price})">
@@ -220,48 +220,4 @@ if (cartItems) {
       total += item.price;
       const div = document.createElement('div');
       div.className = 'cart-item';
-      div.innerHTML = `
-        <div>
-          <h4>${item.appName} - ${item.countryName}</h4>
-          <p>Code: ${item.countryCode}</p>
-        </div>
-        <div>
-          <strong>₦${item.price.toLocaleString()}</strong>
-          <button class="btn btn-secondary" onclick="removeFromCart(${item.id})">Remove</button>
-        </div>
-      `;
-      cartItems.appendChild(div);
-    });
-    
-    document.getElementById('cartTotal').textContent = total.toLocaleString();
-  }
-}
-
-// Remove from cart
-function removeFromCart(id) {
-  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-  cart = cart.filter(item => item.id !== id);
-  localStorage.setItem('cart', JSON.stringify(cart));
-  location.reload();
-}
-
-// Checkout to WhatsApp
-const checkoutBtn = document.getElementById('checkoutBtn');
-if (checkoutBtn) {
-  checkoutBtn.addEventListener('click', () => {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const userEmail = localStorage.getItem('userEmail') || 'Guest';
-    
-    let message = `Hello! I want to order SMS virtual numbers:%0A%0A`;
-    message += `Email: ${userEmail}%0A%0AItems:%0A`;
-    
-    let total = 0;
-    cart.forEach((item, i) => {
-      message += `${i+1}. ${item.appName} - ${item.countryName} (${item.countryCode}) - ₦${item.price.toLocaleString()}%0A`;
-      total += item.price;
-    });
-    
-    message += `%0ATotal: ₦${total.toLocaleString()}%0A%0APlease confirm my order.`;
-    window.open(`https://wa.me/2348088639901?text=${message}`, '_blank');
-  });
-}
+      div
