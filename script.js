@@ -1,5 +1,5 @@
 // Auth check
-const protectedPages = ['dashboard.html', 'how-to-use.html', 'cart.html'];
+const protectedPages = ['dashboard', 'how-to-use', 'cart', 'contact'];
 const currentPage = window.location.pathname.split('/').pop();
 
 if (protectedPages.includes(currentPage)) {
