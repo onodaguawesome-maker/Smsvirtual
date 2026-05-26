@@ -7,6 +7,22 @@ if (protectedPages.includes(currentPage)) {
   if (!isLoggedIn) window.location.href = 'login.html';
 }
 
+// MOBILE MENU TOGGLE - ADD THIS
+const menuToggle = document.getElementById('menuToggle');
+const navLinks = document.getElementById('navLinks');
+if (menuToggle) {
+  menuToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+  });
+  
+  // Close menu when clicking a link
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('active');
+    });
+  });
+}
+
 // Update cart count
 function updateCartCount() {
   const cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -75,13 +91,13 @@ function getCountryPrice(countryCode, appMultiplier = 1) {
   
   let basePrice;
   if (tier1.includes(countryCode)) {
-    basePrice = Math.floor(Math.random() * 1200) + 2000; // ₦2,000-₦3,200
+    basePrice = Math.floor(Math.random() * 1200) + 2000;
   } else if (tier2.includes(countryCode)) {
-    basePrice = Math.floor(Math.random() * 800) + 1200; // ₦1,200-₦2,000
+    basePrice = Math.floor(Math.random() * 800) + 1200;
   } else if (['CN', 'JP', 'KR', 'SG', 'AE', 'SA', 'TR'].includes(countryCode)) {
-    basePrice = Math.floor(Math.random() * 400) + 800; // ₦800-₦1,200
+    basePrice = Math.floor(Math.random() * 400) + 800;
   } else {
-    basePrice = Math.floor(Math.random() * 400) + 400; // ₦400-₦800
+    basePrice = Math.floor(Math.random() * 400) + 400;
   }
   
   return Math.round((basePrice * appMultiplier) / 50) * 50;
@@ -100,7 +116,6 @@ if (appsList) {
           <h3>${app.name}</h3>
           <p>Virtual number for ${app.name}</p>
         </div>
-      </div>
       <button class="btn btn-primary btn-small" onclick="showCountries('${app.name}', '${app.logo}', ${app.multiplier})">
         Select
       </button>
@@ -153,7 +168,6 @@ function showCountries(appName, appLogo, multiplier) {
               <h3>${country.name.common}</h3>
               <p>${phoneCode}</p>
             </div>
-          </div>
           <div style="display: flex; align-items: center; gap: 1rem;">
             <div class="list-item-price">₦${price.toLocaleString()}</div>
             <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); addToCart('${appName}', '${country.name.common}', '${country.cca2}', ${price})">
