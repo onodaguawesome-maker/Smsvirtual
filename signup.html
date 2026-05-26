@@ -7,18 +7,10 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="auth-page">
-  <nav class="navbar">
-    <div class="nav-brand">SMS Virtual Pro</div>
-    <button class="menu-toggle" id="menuToggle">☰</button>
-    <div class="nav-links" id="navLinks">
-      <a href="/">Home</a>
-      <a href="/contact">Contact Us</a>
-      <a href="/login" class="btn btn-outline">Login</a>
-      <a href="/signup" class="btn btn-primary">Sign Up</a>
-    </div>
-  </nav>
-  
   <div class="auth-container">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div class="nav-brand" style="font-size: 1.8rem;">SMS Virtual Pro</div>
+    </div>
     <h2>Create Account</h2>
     <form id="signupForm">
       <input type="text" id="name" placeholder="Full Name" required>
@@ -28,6 +20,7 @@
       <div id="loader" class="loader hidden"></div>
     </form>
     <p>Already have an account? <a href="/login">Login</a></p>
+    <p style="margin-top: 1rem; text-align: center;"><a href="/contact">Contact Us</a> | <a href="/">Home</a></p>
   </div>
   <script src="script.js"></script>
 </body>
