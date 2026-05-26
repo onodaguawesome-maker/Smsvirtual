@@ -1,10 +1,12 @@
-// Auth check
+// FIXED AUTH CHECK - works with clean URLs
+const currentPath = window.location.pathname.replace(/^\/+|\/+$/g, '').split('/')[0] || 'index';
 const protectedPages = ['dashboard', 'how-to-use', 'cart', 'contact'];
-const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
 
-if (protectedPages.includes(currentPage)) {
+if (protectedPages.includes(currentPath)) {
   const isLoggedIn = localStorage.getItem('isLoggedIn');
-  if (!isLoggedIn) window.location.href = '/login';
+  if (isLoggedIn !== 'true') {
+    window.location.href = '/login';
+  }
 }
 
 // MOBILE MENU TOGGLE
@@ -41,33 +43,39 @@ if (logoutBtn) {
   });
 }
 
-// Signup Form
+// Signup Form - FIXED
 const signupForm = document.getElementById('signupForm');
 if (signupForm) {
   signupForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const loader = document.getElementById('loader');
     loader.classList.remove('hidden');
+    
+    // Save immediately, then redirect
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('userEmail', document.getElementById('email').value);
+    
     setTimeout(() => {
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('userEmail', document.getElementById('email').value);
-      window.location.href = '/dashboard';
-    }, 1500);
+      window.location.replace('/dashboard'); // replace prevents back button loop
+    }, 500);
   });
 }
 
-// Login Form
+// Login Form - FIXED
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const loader = document.getElementById('loader');
     loader.classList.remove('hidden');
+    
+    // Save immediately, then redirect
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('userEmail', document.getElementById('loginEmail').value);
+    
     setTimeout(() => {
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('userEmail', document.getElementById('loginEmail').value);
-      window.location.href = '/dashboard';
-    }, 1500);
+      window.location.replace('/dashboard'); // replace prevents back button loop
+    }, 500);
   });
 }
 
@@ -115,6 +123,7 @@ if (appsList) {
           <h3>${app.name}</h3>
           <p>Virtual number for ${app.name}</p>
         </div>
+      </div>
       <button class="btn btn-primary btn-small" onclick="showCountries('${app.name}', '${app.logo}', ${app.multiplier})">
         Select
       </button>
@@ -220,4 +229,48 @@ if (cartItems) {
       total += item.price;
       const div = document.createElement('div');
       div.className = 'cart-item';
-      div
+      div.innerHTML = `
+        <div>
+          <h4>${item.appName} - ${item.countryName}</h4>
+          <p>Code: ${item.countryCode}</p>
+        </div>
+        <div>
+          <strong>₦${item.price.toLocaleString()}</strong>
+          <button class="btn btn-secondary" onclick="removeFromCart(${item.id})">Remove</button>
+        </div>
+      `;
+      cartItems.appendChild(div);
+    });
+    
+    document.getElementById('cartTotal').textContent = total.toLocaleString();
+  }
+}
+
+// Remove from cart
+function removeFromCart(id) {
+  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  cart = cart.filter(item => item.id !== id);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  location.reload();
+}
+
+// Checkout to WhatsApp
+const checkoutBtn = document.getElementById('checkoutBtn');
+if (checkoutBtn) {
+  checkoutBtn.addEventListener('click', () => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const userEmail = localStorage.getItem('userEmail') || 'Guest';
+    
+    let message = `Hello! I want to order SMS virtual numbers:%0A%0A`;
+    message += `Email: ${userEmail}%0A%0AItems:%0A`;
+    
+    let total = 0;
+    cart.forEach((item, i) => {
+      message += `${i+1}. ${item.appName} - ${item.countryName} (${item.countryCode}) - ₦${item.price.toLocaleString()}%0A`;
+      total += item.price;
+    });
+    
+    message += `%0ATotal: ₦${total.toLocaleString()}%0A%0APlease confirm my order.`;
+    window.open(`https://wa.me/2348088639901?text=${message}`, '_blank');
+  });
+}
