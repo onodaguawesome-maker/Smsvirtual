@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart - SMS Virtual Pro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">SMS Virtual Pro</div>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="how-to-use.html">How to Use</a>
+      <a href="cart.html" class="active">Cart <span id="cartCount">0</span></a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
+
+  <div class="cart-page">
+    <h1>Your Cart</h1>
+    <div id="cartItems"></div>
+    <div id="cartEmpty" class="hidden">
+      <p>Your cart is empty</p>
+      <a href="dashboard.html" class="btn btn-primary">Browse Numbers</a>
+    </div>
+    <div id="cartSummary" class="cart-summary hidden">
+      <h3>Total: ₦<span id="cartTotal">0</span></h3>
+      <button id="checkoutBtn" class="btn btn-primary btn-large">Checkout via WhatsApp</button>
+      <a href="dashboard.html" class="btn btn-secondary">Continue Shopping</a>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
