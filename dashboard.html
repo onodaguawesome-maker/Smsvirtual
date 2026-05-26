@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - SMS Virtual Pro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">SMS Virtual Pro</div>
+    <div class="nav-links">
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="how-to-use.html">How to Use</a>
+      <a href="cart.html">Cart <span id="cartCount">0</span></a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+    <div id="appListView">
+      <h1>Select Service</h1>
+      <p class="subtitle">Choose an app to get a virtual number</p>
+      <div id="appsGrid" class="apps-grid"></div>
+    </div>
+
+    <div id="countryListView" class="hidden">
+      <button id="backToApps" class="btn btn-secondary" style="margin-bottom: 1rem;">← Back to Apps</button>
+      <h1 id="selectedAppTitle">Available Numbers</h1>
+      <p class="subtitle">Select a country for <span id="selectedAppName"></span></p>
+      <div id="servicesLoader" class="loader"></div>
+      <div id="servicesGrid" class="services-grid"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
